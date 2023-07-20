@@ -1,0 +1,36 @@
+{
+    "name": "template",
+    "version": "1.0.0",
+    "description": "this is a template express by crodic crystal",
+    "main": "src/index.js",
+    "scripts": {
+        "dev": "nodemon src/index.js",
+        "start": "node src/index.js"
+    },
+    "keywords": [
+        "express",
+        "mongodb",
+        "mongoose",
+        "cors",
+        "bcrypt",
+        "jwt",
+        "morgan"
+    ],
+    "author": "crodic",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^5.1.0",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-async-handler": "^1.2.0",
+        "jsonwebtoken": "^9.0.0",
+        "mongodb": "^5.6.0",
+        "mongoose": "^7.3.1",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    }
+}
