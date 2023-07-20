@@ -21,5 +21,11 @@ UserRouter.post("/refresh_v2", UserController.refreshTokenLocal);
 // GET - LOGOUT
 UserRouter.get("/logout", UserController.logout)
 
+// GET - RESET PASSWORD
+UserRouter.get("/forgot_password", UserController.resetPassword);
+
+// PUT - CHANGE PASSWORD
+UserRouter.put("/change_password", UserController.changePassword);
+
 
 module.exports = UserRouter;

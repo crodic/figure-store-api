@@ -1,8 +1,7 @@
 const UserModel = require("../Models/user");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const { checkPassword, createAccessToken, createRefreshToken } = require("../Utility/funct");
-
+const { checkPassword, createAccessToken, createRefreshToken, createResetToken, sendMailUser } = require("../Utility/funct");
 
 const UserController = {
     // REGISTER
@@ -116,11 +115,50 @@ const UserController = {
         if (!cookie && !cookie.refreshToken) return res.status(400).json({ success: false, msg: "Not Refresh Token in Cookie" });
 
         // Delete Token in database
-        await UserModel.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: null });
+        await UserModel.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: undefined });
 
         // Delete Refresh Token in Cookie
         res.clearCookie("refreshToken", { httpOnly: true, secure: true })
         return res.status(200).json({ success: true, msg: "Logout Successfully" });
+    }),
+    // RESET PASSWORD
+    resetPassword: asyncHandler(async (req, res) => {
+        const { email } = req.query;
+        if (!email) throw new Error("Missing Email");
+        const user = await UserModel.findOne({ email })
+        if (!user) return res.status(404).json({ success: false, msg: "User not found" });
+        const objectToken = createResetToken();
+        console.log(objectToken.resetToken);
+        user.passwordResetToken = objectToken.resetToken;
+        user.passwordResetExpired = objectToken.expiredToken;
+        await user.save();
+
+        const html = `Xin vui lòng bấm vào liên kết sau để đổi 
+            mật khẩu đăng nhập. liên kết sẽ hết hạn sau 15 phút kể từ lúc nhận được mail này. 
+            <a href="${process.env.URL_SERVER}/v1/api/user/reset_password/${objectToken.resetToken}">Click Here</a>`
+        const data = {
+            email,
+            html
+        }
+
+        const result = await sendMailUser(data);
+        return res.status(200).json({ success: true, result })
+    }),
+    // CHANGE PASSWORD WITh RESET TOKEN
+    changePassword: asyncHandler(async (req, res) => {
+        const { password, token } = req.body;
+        if (!password || !token) return res.status(400).json({ success: false, msg: "Missing Field" })
+        const user = await UserModel.findOne({ passwordResetToken: token, passwordResetExpired: { $gt: Date.now() } })
+        if (!user) return res.status(404).json({ success: false, msg: "Invalid Reset Password Token" });
+        user.password = password;
+        user.passwordChangeAt = Date.now();
+        user.passwordResetToken = undefined;
+        user.passwordResetExpired = undefined;
+        const result = await user.save();
+        return res.status(200).json({
+            success: result ? true : false,
+            msg: "Update Password Successfully",
+        })
     })
 }
 
