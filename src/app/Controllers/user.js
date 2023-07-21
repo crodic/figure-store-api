@@ -128,7 +128,6 @@ const UserController = {
         const user = await UserModel.findOne({ email })
         if (!user) return res.status(404).json({ success: false, msg: "User not found" });
         const objectToken = createResetToken();
-        console.log(objectToken.resetToken);
         user.passwordResetToken = objectToken.resetToken;
         user.passwordResetExpired = objectToken.expiredToken;
         await user.save();

@@ -1,11 +1,10 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
+    host: "smtp.gmail.com", // => Gmail Google
+    port: 465, // PORT
     secure: true,
     auth: {
-        // TODO: replace `user` and `pass` values from <https://forwardemail.net>
         user: process.env.EMAIL_NAME,
         pass: process.env.APP_PASSWORD
     }

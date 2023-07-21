@@ -29,10 +29,10 @@ const createResetToken = () => {
 const sendMailUser = (async ({ email, html }) => {
     try {
         const info = await transporter.sendMail({
-            from: '"Figure Shop 👻" <no-relply@shopfigure.com>', // sender address
-            to: email, // list of receivers
-            subject: "Đổi Mật Khẩu Tài Khoản Figure Shop ✔", // Subject line
-            html: html, // html body
+            from: '"Figure Shop 👻" <no-relply@shopfigure.com>', // => Who Send
+            to: email, // => Who Take
+            subject: "Đổi Mật Khẩu Tài Khoản Figure Shop ✔", // => Title Mail
+            html: html, // => Mail Content
         });
         return info;
     } catch (error) {
