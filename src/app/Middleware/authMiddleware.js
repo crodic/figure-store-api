@@ -11,6 +11,11 @@ const authMiddleware = {
             req.token = decode;
             next();
         })
+    }),
+    isAdmin: asyncHandler(async (req, res, next) => {
+        const { role } = req.token;
+        if (role !== "admin") return res.status(403).json({ success: false, msg: "Required Admin" })
+        next();
     })
 }
 
