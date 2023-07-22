@@ -9,6 +9,7 @@ require("dotenv").config();
 const Connection = require("./app/Config/db/DBContext");
 const UserRouter = require("./app/Routes/user");
 const { notFound, errorHandler } = require("./app/Middleware/errorHandler");
+const ProductRoute = require("./app/Routes/proudtc.route");
 
 // Config app
 const app = express();
@@ -26,6 +27,7 @@ Connection();
 
 // Routes
 app.use("/v1/api/user", UserRouter);
+app.use("/v1/api/product", ProductRoute);
 
 app.use("*", notFound);
 app.use(errorHandler);

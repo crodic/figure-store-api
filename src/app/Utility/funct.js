@@ -9,7 +9,7 @@ const checkPassword = async (password, hashPassword) => {
 }
 
 const createAccessToken = (uid, role) => {
-    const token = jwt.sign({ uid, role }, process.env.ACCESS_TOKEN_KEY, { expiresIn: "30s" });
+    const token = jwt.sign({ uid, role }, process.env.ACCESS_TOKEN_KEY, { expiresIn: "5m" });
     return token;
 }
 

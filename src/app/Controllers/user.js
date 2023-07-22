@@ -1,4 +1,4 @@
-const UserModel = require("../Models/user");
+const UserModel = require("../Models/user.model");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { checkPassword, createAccessToken, createRefreshToken, createResetToken, sendMailUser } = require("../Utility/funct");
@@ -109,13 +109,15 @@ const UserController = {
         })
 
     }),
-    // LOGOUT
+    // LOGOUT V1 (only cookie)
     logout: asyncHandler(async (req, res) => {
         const cookie = req.cookies;
-        if (!cookie && !cookie.refreshToken) return res.status(400).json({ success: false, msg: "Not Refresh Token in Cookie" });
+        if (!cookie.refreshToken) {
+            return res.status(400).json({ success: false, msg: "Not Refresh Token in Cookie" });
+        }
 
         // Delete Token in database
-        await UserModel.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: undefined });
+        await UserModel.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: null });
 
         // Delete Refresh Token in Cookie
         res.clearCookie("refreshToken", { httpOnly: true, secure: true })
@@ -158,6 +160,34 @@ const UserController = {
             success: result ? true : false,
             msg: "Update Password Successfully",
         })
+    }),
+    getUsers: asyncHandler(async (req, res) => {
+        const response = await UserModel.find().select('-refreshToken -password -role');
+        return res.status(200).json({
+            success: response ? true : false,
+            results: response,
+        })
+    }),
+    deleteUser: asyncHandler(async (req, res) => {
+        const { id } = req.query;
+        if (!id) return res.status(400).json({ success: false, msg: "Missing ID" })
+        const response = await UserModel.findByIdAndDelete(id);
+        return res.status(200).json({ success: response ? true : false, msg: response ? `User with email ${response.email} is delete` : "User not found" });
+    }),
+    updateUser: asyncHandler(async (req, res) => {
+        const { uid } = req.token;
+        const { role, refreshToken } = req.body;
+        if (!uid) return res.status(403).json({ success: false, msg: "Missing ID USER" });
+        if (role || refreshToken) return res.status(403).json({ success: false, msg: "You don't have change role" })
+        if (Object.keys(req.body).length === 0) throw new Error("Missing Input"); //Object to Array with key
+        const user = await UserModel.findByIdAndUpdate(uid, req.body, { new: true }).select("-password -role -refreshToken");
+        return res.status(201).json({ success: user ? true : false, msg: user ? "Update User Completed" : "Somethings went wrong" })
+    }),
+    updateUserByAdmin: asyncHandler(async (req, res) => {
+        const { uid } = req.params;
+        if (Object.keys(req.body).length === 0) return res.status(400).json({ success: false, msg: "Missing Input" });
+        const user = await UserModel.findByIdAndUpdate(uid, req.body, { new: true }).select("-password -role -refreshToken");
+        return res.status(201).json({ success: user ? true : false, msg: user ? "Update User Completed" : "Somethings went wrong" })
     })
 }
 
