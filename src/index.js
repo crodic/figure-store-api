@@ -7,9 +7,11 @@ require("dotenv").config();
 
 // Import file
 const Connection = require("./app/Config/db/DBContext");
-const UserRouter = require("./app/Routes/user");
+const UserRouter = require("./app/Routes/user.route");
 const { notFound, errorHandler } = require("./app/Middleware/errorHandler");
-const ProductRoute = require("./app/Routes/proudtc.route");
+const ProductRoute = require("./app/Routes/product.route");
+const CategoriesRoute = require("./app/Routes/categories.route");
+const BlogCategoriesRoute = require("./app/Routes/blogCategories.route");
 
 // Config app
 const app = express();
@@ -28,6 +30,8 @@ Connection();
 // Routes
 app.use("/v1/api/user", UserRouter);
 app.use("/v1/api/product", ProductRoute);
+app.use("/v1/api/categories", CategoriesRoute);
+app.use("/v1/api/blog", BlogCategoriesRoute);
 
 app.use("*", notFound);
 app.use(errorHandler);

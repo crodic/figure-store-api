@@ -24,7 +24,7 @@ const ProductController = {
     }),
     getProducts: asyncHandler(async (req, res) => {
         const query = { ...req.query };
-        // Tách Các Field Đặc biệt ra khỏi query
+        // Tách Các Field Đặc biệt ra khỏi query để không xử lý logic các field này
         const excludeFields = ['limit', 'sort', 'page', 'fields']
         excludeFields.forEach(item => delete query[item]);
 
@@ -34,8 +34,10 @@ const ProductController = {
         queryString = queryString.replace(/\b(gte|gt|lt|lte)\b/g, element => `$${element}`)
         const formatQuery = JSON.parse(queryString);
 
+
         // Tìm Theo Title nếu có 1 chữ cũng sẽ ra kết quả
         if (query?.title) formatQuery.title = { $regex: query.title, $options: "i" }
+        // Nêú ko tách các field đặc biệt thì tại đây formatQuery sẽ tìm theo điều kiện rác => Không trả về bắt cứ gì
         let queryCommand = ProductModel.find(formatQuery).populate("rating.postedBy"); // populate 1 giá trị object trong 1 array dùng [Array].[Object-Key]
 
 
@@ -106,7 +108,17 @@ const ProductController = {
         } else {
             await ProductModel.findByIdAndUpdate(pid, { $push: { rating: { star, comment, postedBy: uid } } }, { new: true })
         }
-        return res.status(200).json({ success: true, msg: "Rating Completed" })
+
+        // Sum rating
+        const updateProduct = await ProductModel.findById(pid);
+        const ratingCount = updateProduct.rating.length;
+        const sumRating = updateProduct.rating.reduce((sum, element) => {
+            return sum + +element.star;
+        }, 0)
+        updateProduct.totalRating = Math.round(sumRating * 10 / ratingCount) / 10
+        await updateProduct.save();
+
+        return res.status(200).json({ success: true, msg: "Rating Completed", product: updateProduct })
     })
 }
 
