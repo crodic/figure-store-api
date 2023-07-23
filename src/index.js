@@ -13,6 +13,7 @@ const ProductRoute = require("./app/Routes/product.route");
 const CategoriesRoute = require("./app/Routes/categories.route");
 const BlogCategoriesRoute = require("./app/Routes/blogCategories.route");
 const BlogRoute = require("./app/Routes/blog.route");
+const BrandRoute = require("./app/Routes/brand.route");
 
 // Config app
 const app = express();
@@ -34,6 +35,7 @@ app.use("/v1/api/product", ProductRoute);
 app.use("/v1/api/categories", CategoriesRoute);
 app.use("/v1/api/blog", BlogCategoriesRoute);
 app.use("/v1/api/blogger", BlogRoute);
+app.use("/v1/api/brand", BrandRoute);
 
 app.use("*", notFound);
 app.use(errorHandler);
