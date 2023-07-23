@@ -23,7 +23,7 @@ const BlogController = {
     }),
     likeBlog: asyncHandler(async (req, res) => {
         const { uid } = req.token;
-        const { blogId } = req.body;
+        const { blogId } = req.params;
         if (!blogId) return res.status(400).json({ success: false, msg: "Missing Blog ID" })
         const blog = await BlogModel.findById(blogId);
         const alreadyDisLiked = blog?.disLikes?.find(id => id.toString() === uid);
@@ -42,7 +42,7 @@ const BlogController = {
     }),
     disLikeBlog: asyncHandler(async (req, res) => {
         const { uid } = req.token;
-        const { blogId } = req.body;
+        const { blogId } = req.params;
         if (!blogId) return res.status(400).json({ success: false, msg: "Missing Blog ID" })
         const blog = await BlogModel.findById(blogId);
         const alreadyLiked = blog?.likes?.find(id => id.toString() === uid);
@@ -58,6 +58,18 @@ const BlogController = {
             const response = await BlogModel.findByIdAndUpdate(blogId, { $push: { disLikes: uid } }, { new: true })
             return res.status(200).json({ success: true, result: response });
         }
+    }),
+    getBlog: asyncHandler(async (req, res) => {
+        const { blogId } = req.params;
+        const blog = await BlogModel.findByIdAndUpdate(blogId, { $inc: { view: 1 } }, { new: true }).populate("likes", "firstname lastname").populate("disLikes", "firstname lastname")
+        if (!blog) return res.status(404).json({ success: false, msg: "Blog not found" });
+
+        return res.status(200).json({ success: true, blog })
+    }),
+    deleteBlog: asyncHandler(async (req, res) => {
+        const { blogId } = req.params;
+        const blog = await BlogModel.findByIdAndDelete(blogId);
+        return res.status(200).json({ success: blog ? true : false, blog: blog ? blog : "Some things went wrong !" })
     })
 }
 

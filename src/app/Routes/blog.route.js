@@ -9,13 +9,18 @@ BlogRoute.post("/", authMiddleware.auth, authMiddleware.isAdmin, BlogController.
 // GET - BLOGS
 BlogRoute.get("/", BlogController.getBlogs);
 
+// DELETE - BLOG
+BlogRoute.delete("/:blogId", authMiddleware.auth, authMiddleware.isAdmin, BlogController.deleteBlog);
+
 // PUT - LIKE
-BlogRoute.put("/like", authMiddleware.auth, BlogController.likeBlog);
+BlogRoute.put("/like/:blogId", authMiddleware.auth, BlogController.likeBlog);
 
 // PUT - DISLIKE
-BlogRoute.put("/dislike", authMiddleware.auth, BlogController.disLikeBlog);
+BlogRoute.put("/dislike/:blogId", authMiddleware.auth, BlogController.disLikeBlog);
 
 // PUT - UPDATE
 BlogRoute.put("/:blogId", authMiddleware.auth, authMiddleware.isAdmin, BlogController.updateBlog);
 
+// GET - DETAIL BLOG
+BlogRoute.get("/:blogId", BlogController.getBlog);
 module.exports = BlogRoute;
