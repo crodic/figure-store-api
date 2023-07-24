@@ -119,6 +119,12 @@ const ProductController = {
         await updateProduct.save();
 
         return res.status(200).json({ success: true, msg: "Rating Completed", product: updateProduct })
+    }),
+    uploadImage: asyncHandler(async (req, res) => {
+        const { pid } = req.params;
+        if (!req.files) return res.status(400).json({ success: false, msg: "Missing Images" });
+        const response = await ProductModel.findByIdAndUpdate(pid, { $push: { images: { $each: req.files.map(image => image.path) } } }, { new: true })
+        return res.status(200).json({ success: response ? true : false, product: response ? response : "Can not upload Images Product" })
     })
 }
 

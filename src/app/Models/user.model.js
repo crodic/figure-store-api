@@ -9,8 +9,11 @@ const UserSchema = new Schema({
     phone: { type: String, required: true, unique: true },
     password: { type: String, required: true, min: 6, max: 24 },
     role: { type: String, default: "user", enum: ["admin", "user"] },
-    cart: { type: Array, default: [] },
-    address: [{ type: mongoose.Types.ObjectId, ref: "address" }],
+    cart: [{
+        product: { type: mongoose.Types.ObjectId, ref: "products" },
+        quantity: Number, origin: String
+    }],
+    address: { type: String },
     wishlist: [{ type: mongoose.Types.ObjectId, ref: "products" }],
     isBlocked: { type: Boolean, default: false },
     refreshToken: { type: String },

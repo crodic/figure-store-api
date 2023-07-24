@@ -70,6 +70,12 @@ const BlogController = {
         const { blogId } = req.params;
         const blog = await BlogModel.findByIdAndDelete(blogId);
         return res.status(200).json({ success: blog ? true : false, blog: blog ? blog : "Some things went wrong !" })
+    }),
+    uploadImage: asyncHandler(async (req, res) => {
+        const { blogId } = req.params;
+        if (!req.file) return res.status(400).json({ success: false, msg: "Missing Images" });
+        const response = await BlogModel.findByIdAndUpdate(blogId, { images: req.file.path }, { new: true })
+        return res.status(200).json({ success: response ? true : false, blog: response ? response : "Can not upload Images Blog" })
     })
 }
 

@@ -36,7 +36,17 @@ UserRouter.delete("/", authMiddleware.auth, authMiddleware.isAdmin, UserControll
 // PUT - USER
 UserRouter.put("/", authMiddleware.auth, UserController.updateUser);
 
+// PUT - UPDATE ADDRESS USER
+UserRouter.put("/address", authMiddleware.auth, UserController.updateAddressUser);
+
+//PUT - ADD TO CART
+UserRouter.put("/cart", authMiddleware.auth, UserController.addCart);
+
+// PUT - BLOCKED
+UserRouter.put("/blocked/:uid", authMiddleware.auth, authMiddleware.isAdmin, UserController.isBlocked);
+
 // PUT - ADMIN USER
 UserRouter.put("/:uid", authMiddleware.auth, authMiddleware.isAdmin, UserController.updateUserByAdmin);
+
 
 module.exports = UserRouter;

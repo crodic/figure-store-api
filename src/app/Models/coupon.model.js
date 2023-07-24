@@ -7,5 +7,5 @@ const CouponSchema = new Schema({
     expiry: { type: Date, required: true },
 }, { timestamps: true })
 
-const CouponModel = mongoose.model("brands", CouponSchema);
+const CouponModel = mongoose.model("coupons", CouponSchema);
 module.exports = CouponModel;

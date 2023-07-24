@@ -14,6 +14,8 @@ const CategoriesRoute = require("./app/Routes/categories.route");
 const BlogCategoriesRoute = require("./app/Routes/blogCategories.route");
 const BlogRoute = require("./app/Routes/blog.route");
 const BrandRoute = require("./app/Routes/brand.route");
+const CouponRoute = require("./app/Routes/coupon.route");
+const BillRoute = require("./app/Routes/bill.route");
 
 // Config app
 const app = express();
@@ -36,6 +38,8 @@ app.use("/v1/api/categories", CategoriesRoute);
 app.use("/v1/api/blog", BlogCategoriesRoute);
 app.use("/v1/api/blogger", BlogRoute);
 app.use("/v1/api/brand", BrandRoute);
+app.use("/v1/api/coupon", CouponRoute);
+app.use("/v1/api/bill", BillRoute);
 
 app.use("*", notFound);
 app.use(errorHandler);

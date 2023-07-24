@@ -1,6 +1,7 @@
 const express = require("express");
 const ProductController = require("../Controllers/product.controller");
 const authMiddleware = require("../Middleware/authMiddleware");
+const upload = require("../Config/cloudinary/cloud.config");
 const ProductRoute = express.Router();
 
 // POST - CREATE PRODUCT
@@ -20,6 +21,9 @@ ProductRoute.put("/:pid", authMiddleware.auth, authMiddleware.isAdmin, ProductCo
 
 // GET - Product
 ProductRoute.get("/:pid", ProductController.getProduct);
+
+// PUT - UPLOAD IMAGE
+ProductRoute.put("/upload_image/:pid", authMiddleware.auth, authMiddleware.isAdmin, upload.array("images", 10), ProductController.uploadImage)
 
 
 module.exports = ProductRoute;

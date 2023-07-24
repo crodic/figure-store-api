@@ -1,6 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../Middleware/authMiddleware");
 const BlogController = require("../Controllers/blog.controller");
+const upload = require("../Config/cloudinary/cloud.config");
 const BlogRoute = express.Router();
 
 // POST - CREATE
@@ -23,4 +24,7 @@ BlogRoute.put("/:blogId", authMiddleware.auth, authMiddleware.isAdmin, BlogContr
 
 // GET - DETAIL BLOG
 BlogRoute.get("/:blogId", BlogController.getBlog);
+
+// PUT - UPLOAD IMAGE
+BlogRoute.put("/upload_image/:blogId", authMiddleware.auth, authMiddleware.isAdmin, upload.single("image"), BlogController.uploadImage);
 module.exports = BlogRoute;
