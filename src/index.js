@@ -24,9 +24,12 @@ const port = process.env.PORT || 1919;
 // Config Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("common"));
-app.use(cors());
 app.use(cookie());
+app.use(cors({
+    origin: true,
+    credentials: true,
+}));
+app.use(morgan("common"));
 
 // Connection MongoDB
 Connection();

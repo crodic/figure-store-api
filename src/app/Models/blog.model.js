@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const BlogSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    category: { type: String, required: true },
+    category: { type: mongoose.Types.ObjectId, ref: "blogCategories" },
     view: { type: Number, default: 0 },
     likes: [{ type: mongoose.Types.ObjectId, ref: "users" }],
     disLikes: [{ type: mongoose.Types.ObjectId, ref: "users" }],

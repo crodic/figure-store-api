@@ -16,6 +16,9 @@ ProductRoute.delete("/", authMiddleware.auth, authMiddleware.isAdmin, ProductCon
 // PUT - Ratting
 ProductRoute.put("/rating", authMiddleware.auth, ProductController.ratting);
 
+// GET - MIN PRICE
+ProductRoute.get("/deal", ProductController.getDealPrice);
+
 // PUT - Update Product
 ProductRoute.put("/:pid", authMiddleware.auth, authMiddleware.isAdmin, ProductController.updateProduct);
 

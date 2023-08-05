@@ -44,7 +44,7 @@ const UserController = {
         if (!updateRefreshToken) throw new Error("Saving Token Failed")
 
         //Lưu cookie
-        res.cookie("refreshToken", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
+        res.cookie("refreshToken", refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: true })
 
         // Loại bỏ Password và Role Khỏi Data trả về, 
         // userData là biến đã được loại bỏ password, role

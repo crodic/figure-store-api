@@ -16,7 +16,7 @@ const ProductController = {
     }),
     getProduct: asyncHandler(async (req, res) => {
         const { pid } = req.params;
-        const product = await ProductModel.findById(pid);
+        const product = await ProductModel.findById(pid).populate("brand").populate("category").populate("rating.postedBy", "_id firstname lastname");
         return res.status(200).json({
             success: true,
             product: product
@@ -125,6 +125,10 @@ const ProductController = {
         if (!req.files) return res.status(400).json({ success: false, msg: "Missing Images" });
         const response = await ProductModel.findByIdAndUpdate(pid, { $push: { images: { $each: req.files.map(image => image.path) } } }, { new: true })
         return res.status(200).json({ success: response ? true : false, product: response ? response : "Can not upload Images Product" })
+    }),
+    getDealPrice: asyncHandler(async (req, res) => {
+        const product = await ProductModel.findOne({}).sort({ createdAt: -1 });
+        return res.status(200).json({ success: product ? true : false, product })
     })
 }
 
