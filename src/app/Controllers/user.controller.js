@@ -123,6 +123,18 @@ const UserController = {
         res.clearCookie("refreshToken", { httpOnly: true, secure: true })
         return res.status(200).json({ success: true, msg: "Logout Successfully" });
     }),
+    alterPassword: asyncHandler(async (req, res) => {
+        const { password, newPassword } = req.body;
+        const { uid } = req.token;
+        if (!password || !newPassword) return res.status(400).json({ success: false, msg: "Missing Input" });
+        const user = await UserModel.findById(uid);
+        if (!user) throw new Error("Not found User");
+        const check = await checkPassword(password, user.password);
+        if (!check) return res.status(404).json({ success: false, msg: "Password is not found" });
+        user.password = newPassword;
+        await user.save();
+        return res.status(200).json({ success: true, msg: "Change Password Successfully", user })
+    }),
     // RESET PASSWORD
     resetPassword: asyncHandler(async (req, res) => {
         const { email } = req.query;

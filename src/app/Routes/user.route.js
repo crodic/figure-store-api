@@ -45,6 +45,9 @@ UserRouter.put("/cart", authMiddleware.auth, UserController.addCart);
 //PUT - REMOVE TO CART
 UserRouter.put("/cart/remove", authMiddleware.auth, UserController.removeProductCart);
 
+//PUT - Alter Password
+UserRouter.put("/alter_password", authMiddleware.auth, UserController.alterPassword);
+
 // PUT - DELETE CARD
 UserRouter.put("/cart/delete/:uid", authMiddleware.auth, UserController.deleteCartUser);
 
