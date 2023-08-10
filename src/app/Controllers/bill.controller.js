@@ -12,7 +12,6 @@ const BillController = {
         const products = bill.cart?.map(element => ({
             product: element.product._id,
             count: element.quantity,
-            origin: element.origin,
         }))
         let total = bill.cart?.reduce((sum, element) => element.product.price * element.quantity + sum, 0)
         const createData = { products, total, orderBy: uid };
@@ -42,6 +41,11 @@ const BillController = {
         const { uid } = req.token;
         const bill = await BillModel.find({ orderBy: uid });
         return res.status(200).json({ success: bill ? true : false, bill })
+    }),
+    getBillById: asyncHandler(async (req, res) => {
+        const { bid } = req.params;
+        const bill = await BillModel.findById(bid);
+        return res.status(200).json({ success: bill ? true : false, bill });
     })
 }
 

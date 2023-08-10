@@ -40,6 +40,12 @@ const CouponController = {
         const deleteCoupon = await CouponModel.findByIdAndDelete(cid);
         if (!deleteCoupon) return res.status(404).json({ success: false, msg: "Coupon Not found" });
         return res.status(200).json({ success: deleteCoupon ? true : false, msg: "Delete Coupon Successfully" });
+    }),
+    getCouponByName: asyncHandler(async (req, res) => {
+        const { name } = req.query;
+        const coupon = await CouponModel.findOne({ name });
+        if (!coupon) return res.status(404).json({ success: false, msg: "Coupon not found" });
+        return res.status(200).json({ success: coupon ? true : false, coupon });
     })
 }
 

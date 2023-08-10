@@ -9,6 +9,8 @@ CouponRoute.post("/", authMiddleware.auth, authMiddleware.isAdmin, CouponControl
 // GET - COUPONS
 CouponRoute.get("/", CouponController.getCoupons);
 
+CouponRoute.get("/find_coupon", CouponController.getCouponByName);
+
 // GET - COUPON
 CouponRoute.get("/:cid", CouponController.getCoupon);
 

@@ -92,7 +92,7 @@ const UserController = {
 
         jwt.verify(token, process.env.REFRESH_TOKEN_KEY, async (err, decode) => {
             if (err) return res.status(401).json({ success: false, msg: "Token Expired" });
-            const response = await UserModel.findOne({ _id: decode.uid, refreshToken: token });
+            const response = await UserModel.findOne({ _id: decode.uid });
             if (!response) return res.status(404).json({ success: false, msg: "User not found" });
 
             const newAccessToken = createAccessToken(response._id, response.role);
@@ -181,7 +181,7 @@ const UserController = {
         if (role || refreshToken) return res.status(403).json({ success: false, msg: "You don't have change role" })
         if (Object.keys(req.body).length === 0) throw new Error("Missing Input"); //Object to Array with key
         const user = await UserModel.findByIdAndUpdate(uid, req.body, { new: true }).select("-password -role -refreshToken");
-        return res.status(201).json({ success: user ? true : false, msg: user ? "Update User Completed" : "Somethings went wrong" })
+        return res.status(201).json({ success: user ? true : false, msg: user ? "Update User Completed" : "Somethings went wrong", user: user })
     }),
     updateUserByAdmin: asyncHandler(async (req, res) => {
         const { uid } = req.params;
@@ -192,48 +192,23 @@ const UserController = {
     updateAddressUser: asyncHandler(async (req, res) => {
         const { uid } = req.token;
         if (!req.body.address) return res.status(400).json({ success: false, msg: "Missing Input" });
-        const user = await UserModel.findByIdAndUpdate(uid, { $push: { address: req.body.address } }, { new: true }).select("-password -role -refreshToken");
+        const user = await UserModel.findByIdAndUpdate(uid, { address: req.body.address }, { new: true }).select("-password -role -refreshToken");
         return res.status(201).json({ success: user ? true : false, user: user ? user : "Somethings went wrong" })
     }),
-    // addCart: asyncHandler(async (req, res) => {
-    //     const { uid } = req.token;
-    //     const { pid, quantity, origin } = req.body;
-    //     if (!pid || !quantity || !origin) throw new Error("Missing Input");
-    //     const user = await UserModel.findById(uid).select("cart");
-    //     const alreadyProduct = user.cart.find(el => el.product.toString() === pid)
-    //     if (alreadyProduct) {
-    //         if (alreadyProduct.origin === origin) {
-    //             const response = await UserModel.updateOne({ cart: { $elemMatch: alreadyProduct } }, { $set: { "cart.$.quantity": quantity } }, { new: true })
-    //             return res.status(200).json({ success: response ? true : false, user: response });
-    //         } else {
-    //             const response = await UserModel.findByIdAndUpdate(uid, { $push: { cart: { product: pid, quantity, origin } } }, { new: true });
-    //             return res.status(200).json({ success: response ? true : false, user: response });
-    //         }
-    //     } else {
-    //         const response = await UserModel.findByIdAndUpdate(uid, { $push: { cart: { product: pid, quantity, origin } } }, { new: true });
-    //         return res.status(200).json({ success: response ? true : false, user: response });
-    //     }
-    // }),
     addCart: asyncHandler(async (req, res) => {
         try {
             const { uid } = req.token;
-            const { pid, quantity, origin } = req.body;
-            if (!pid || !quantity || !origin) throw new Error("Missing Input");
+            const { pid, quantity } = req.body;
+            if (!pid || !quantity) throw new Error("Missing Input");
 
             const user = await UserModel.findById(uid).select("cart");
             const matchingProducts = user.cart.filter(el => el.product.toString() === pid);
 
             if (matchingProducts.length > 0) {
-                const matchingProductWithSameOrigin = matchingProducts.find(product => product.origin === origin);
-                if (matchingProductWithSameOrigin) {
-                    matchingProductWithSameOrigin.quantity = quantity;
-                } else {
-                    // Remove products with the same pid but different origin
-                    user.cart = user.cart.filter(product => product.product.toString() !== pid);
-                    user.cart.push({ product: pid, quantity, origin });
-                }
+                user.cart = user.cart.filter(product => product.product.toString() !== pid);
+                user.cart.push({ product: pid, quantity });
             } else {
-                user.cart.push({ product: pid, quantity, origin });
+                user.cart.push({ product: pid, quantity });
             }
 
             const response = await user.save();
@@ -242,14 +217,42 @@ const UserController = {
             return res.status(500).json({ success: false, error: error.message });
         }
     }),
+    removeProductCart: asyncHandler(async (req, res) => {
+        try {
+            const { uid } = req.token;
+            const { pid } = req.body;
+            if (!pid) {
+                throw new Error("Product ID is required");
+            }
+            const user = await UserModel.findById(uid).select("cart");
+            const matchingProducts = user.cart.filter(el => el.product.toString() === pid);
 
-
+            console.log(user.cart);
+            if (matchingProducts.length > 0) {
+                const index = user.cart.findIndex(prd => prd.product.toString() === pid);
+                if (index === -1) {
+                    return res.status(404).json({ success: false, msg: "Not find Product in Cart" })
+                }
+                user.cart.splice(index, 1);
+            }
+            const response = await user.save();
+            return res.status(200).json({ success: true, user: response });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ success: false, error: error.message });
+        }
+    }),
     isBlocked: asyncHandler(async (req, res) => {
         const { uid } = req.params;
         let { status } = req.body;
         if (!status) status = false;
         await UserModel.findByIdAndUpdate(uid, { isBlocked: status }, { new: true });
         return res.status(200).json({ success: true, msg: `User ${uid} is ${status ? "unblocked" : "blocked"}`, status })
+    }),
+    deleteCartUser: asyncHandler(async (req, res) => {
+        const { uid } = req.params;
+        const deleteCart = await UserModel.findByIdAndUpdate(uid, { $set: { cart: [] } }, { new: true })
+        return res.status(200).json({ success: deleteCart ? true : false, msg: "Delete Cart Completed", user: deleteCart })
     })
 }
 

@@ -5,12 +5,11 @@ const BillSchema = new Schema({
     products: [{
         product: { type: mongoose.Types.ObjectId, ref: "products" },
         count: { type: Number },
-        origin: { type: String },
     }],
     status: {
         type: String,
-        default: "Processing",
-        enum: ["Cancelled", "Processing", "Success"]
+        default: "Chờ Xác Nhận",
+        enum: ["Đã Bị Huỷ", "Chờ Xác Nhận", "Thành Công", "Đang Giao Hàng"]
     },
     coupon: {
         type: mongoose.Types.ObjectId, ref: "coupons"
@@ -19,7 +18,7 @@ const BillSchema = new Schema({
     orderBy: {
         type: mongoose.Types.ObjectId, ref: "users",
     },
-})
+}, { timestamps: true })
 
 const BillModel = mongoose.model("bills", BillSchema);
 

@@ -42,11 +42,19 @@ UserRouter.put("/address", authMiddleware.auth, UserController.updateAddressUser
 //PUT - ADD TO CART
 UserRouter.put("/cart", authMiddleware.auth, UserController.addCart);
 
+//PUT - REMOVE TO CART
+UserRouter.put("/cart/remove", authMiddleware.auth, UserController.removeProductCart);
+
+// PUT - DELETE CARD
+UserRouter.put("/cart/delete/:uid", authMiddleware.auth, UserController.deleteCartUser);
+
 // PUT - BLOCKED
 UserRouter.put("/blocked/:uid", authMiddleware.auth, authMiddleware.isAdmin, UserController.isBlocked);
 
 // PUT - ADMIN USER
 UserRouter.put("/:uid", authMiddleware.auth, authMiddleware.isAdmin, UserController.updateUserByAdmin);
+
+
 
 
 module.exports = UserRouter;
