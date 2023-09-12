@@ -6,16 +6,16 @@ const cookie = require("cookie-parser");
 require("dotenv").config();
 
 // Import file
-const Connection = require("./app/Config/db/DBContext");
-const UserRouter = require("./app/Routes/user.route");
-const { notFound, errorHandler } = require("./app/Middleware/errorHandler");
-const ProductRoute = require("./app/Routes/product.route");
-const CategoriesRoute = require("./app/Routes/categories.route");
-const BlogCategoriesRoute = require("./app/Routes/blogCategories.route");
-const BlogRoute = require("./app/Routes/blog.route");
-const BrandRoute = require("./app/Routes/brand.route");
-const CouponRoute = require("./app/Routes/coupon.route");
-const BillRoute = require("./app/Routes/bill.route");
+const Connection = require("./src/app/Config/db/DBContext");
+const UserRouter = require("./src/app/Routes/user.route");
+const { notFound, errorHandler } = require("./src/app/Middleware/errorHandler");
+const ProductRoute = require("./src/app/Routes/product.route");
+const CategoriesRoute = require("./src/app/Routes/categories.route");
+const BlogCategoriesRoute = require("./src/app/Routes/blogCategories.route");
+const BlogRoute = require("./src/app/Routes/blog.route");
+const BrandRoute = require("./src/app/Routes/brand.route");
+const CouponRoute = require("./src/app/Routes/coupon.route");
+const BillRoute = require("./src/app/Routes/bill.route");
 
 // Config app
 const app = express();

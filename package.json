@@ -2,10 +2,10 @@
     "name": "template",
     "version": "1.0.0",
     "description": "this is a template express by crodic crystal",
-    "main": "src/index.js",
+    "main": "index.js",
     "scripts": {
-        "dev": "nodemon src/index.js",
-        "start": "node src/index.js"
+        "dev": "nodemon index.js",
+        "start": "node index.js"
     },
     "keywords": [
         "express",
