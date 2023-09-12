@@ -35,9 +35,6 @@ app.use(morgan("common"));
 Connection();
 
 // Routes
-app.use("/", (req, res) => {
-    return res.status(200).json({ msg: "OKAY" })
-})
 app.use("/v1/api/user", UserRouter);
 app.use("/v1/api/product", ProductRoute);
 app.use("/v1/api/categories", CategoriesRoute);
