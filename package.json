@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "description": "this is a template express by crodic crystal",
     "main": "index.js",
+    "engines": {
+        "node": ">=16.20.1"
+    },
     "scripts": {
         "dev": "nodemon index.js",
         "start": "node index.js",
