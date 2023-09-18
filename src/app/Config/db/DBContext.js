@@ -4,9 +4,7 @@ const mongoose = require('mongoose');
 const Connection = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI_2, {
-            useNewUrlParser: true, useUnifiedTopology: true, autoReconnect: true,
-            reconnectInterval: 1000,
-            reconnectTries: 10,
+            useNewUrlParser: true, useUnifiedTopology: true
         });
         console.log('Connection successfully !!!');
     } catch (error) {
