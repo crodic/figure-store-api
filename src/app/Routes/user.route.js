@@ -21,6 +21,9 @@ UserRouter.post("/refresh_v2", UserController.refreshTokenLocal);
 // GET - LOGOUT
 UserRouter.get("/logout", UserController.logout)
 
+// GET - LOGOUT
+UserRouter.get("/logout_2", UserController.logoutLocal)
+
 // GET - RESET PASSWORD
 UserRouter.get("/forgot_password", UserController.resetPassword);
 

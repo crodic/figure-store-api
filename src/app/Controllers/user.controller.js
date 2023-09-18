@@ -123,6 +123,16 @@ const UserController = {
         res.clearCookie("refreshToken", { httpOnly: true, secure: true })
         return res.status(200).json({ success: true, msg: "Logout Successfully" });
     }),
+    logoutLocal: asyncHandler(async (req, res) => {
+        const token = req.body.token;
+        if (!token) {
+            return res.status(400).json({ success: false, msg: "Not Refresh Token" });
+        }
+
+        // Delete Token in database
+        await UserModel.findOneAndUpdate({ refreshToken: token }, { refreshToken: null });
+        return res.status(200).json({ success: true, msg: "Logout Successfully" });
+    }),
     alterPassword: asyncHandler(async (req, res) => {
         const { password, newPassword } = req.body;
         const { uid } = req.token;
