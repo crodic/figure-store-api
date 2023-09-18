@@ -6,7 +6,7 @@ const UserSchema = new Schema({
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, unique: true },
+    phone: { type: String, unique: true, sparse: true },
     password: { type: String, required: true, min: 6, max: 24 },
     role: { type: String, default: "user", enum: ["admin", "user"] },
     cart: [{
