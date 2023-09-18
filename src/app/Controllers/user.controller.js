@@ -44,7 +44,7 @@ const UserController = {
         if (!updateRefreshToken) throw new Error("Saving Token Failed")
 
         //Lưu cookie
-        res.cookie("refreshToken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, secure: true })
+        res.cookie("refreshToken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, secure: true, sameSite: "none" })
 
         // Loại bỏ Password và Role Khỏi Data trả về, 
         // userData là biến đã được loại bỏ password, role
@@ -102,7 +102,7 @@ const UserController = {
             const saveToken = await response.save();
             if (!saveToken) throw new Error("Save Token Failed");
 
-            res.cookie("refreshToken", newRefreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
+            res.cookie("refreshToken", newRefreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: "none" })
 
             return res.status(200).json({ success: true, msg: "Refresh Token Successfully", access_token: newAccessToken, refresh_token: newRefreshToken });
 
@@ -120,7 +120,7 @@ const UserController = {
         await UserModel.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: null });
 
         // Delete Refresh Token in Cookie
-        res.clearCookie("refreshToken", { secure: true })
+        res.clearCookie("refreshToken", { secure: true, sameSite: "none" })
         return res.status(200).json({ success: true, msg: "Logout Successfully" });
     }),
     logoutLocal: asyncHandler(async (req, res) => {
